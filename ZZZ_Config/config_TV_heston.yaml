@@ -1,0 +1,21 @@
+---
+learningCycles: 20
+episodes: 1000
+reservoir: 50000
+temp: 100
+nnUpdateThreshold: 1.0
+exmpThreshold: 100000
+numMCTSSims: 25
+validationCycles: 100
+nnWeight: 1.0
+shortenHistoryAfterIter: 5
+numberWorkers: 4
+saveCheckpointsFolder: './ZZZ_Runs/Run_1_TV_Heston'
+loadModelFile: null
+loadCheckpointFile: null
+nnArgs:
+  lr: 0.001
+  dropout: 0.3
+  epochs: 10
+  batch_size: 64
+  num_channels: 128
