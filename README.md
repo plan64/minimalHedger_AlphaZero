@@ -9,7 +9,7 @@ Main components of research code from the article [Hedging of Financial Derivati
 
 ## Usage
 ### Training
- * congig.yaml contains training parameters. Specify folder to store outputs of learning process.
+ * config.yaml contains training parameters. Specify folder to store outputs of learning process.
  * Execute main.py to start the training process, either from IDE or from Terminal specifying path to config.yaml.
 ### Execution
  * In Executer.py specify the location of trained neural networks.
