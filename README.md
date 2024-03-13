@@ -26,5 +26,11 @@ Known bugs are listed below. Please report in case you observe new bugs.
 
 * This is research, not production code. There are many hacks, bugs and experimental components.
 * The code contains a bug that affects the construction of the planning tree under the scaling of underlying models by a constant. For experiments it is currently recommended to start underlying prices at 1.0 (e.g. by scaling down the value of the stock and strike).
+* A number of bugs have been reported since the publication of this code. I am addressing them consecutively.
+ - bug in creation of trinomial trees, missing default name 'p='
+ - bug in agent's policy evaluation. Policies should be evaluated using only the neural network tree policy head
+ - bug in training path generation. Sampling should be done at each step of the search process, instead of once before the search begins.
+ - ...
+
 
 Author: Oleg Szehr, IDSIA, Switzerland, oleg.szehr@idsia.ch

@@ -70,7 +70,7 @@ class HedgerPlan_TV():
     def createData(self):
         ttTransitions = np.zeros((self.n_episodes,self.n_samples+1)) 
         for it in range(self.n_episodes):
-            tmp = np.random.choice([1,0,-1], self.n_samples, [self.probUp,self.probMid,self.probDown])
+            tmp = np.random.choice([1,0,-1], self.n_samples, p=[self.probUp,self.probMid,self.probDown])
             ttTransitions[it,1:self.n_samples+1] = tmp
         return ttTransitions
     
@@ -111,10 +111,11 @@ class HedgerPlan_TV():
         #state 2: riskfree account Balance
         #state 3: new stockPrice
         #state 4: time to maturity
+        marketTransition = self.upFactor**np.random.choice([1,0,-1], 1, p=[self.probUp,self.probMid,self.probDown])[0]
         stateNew = (state[0,0]+1,
                  newHoldings,
                  state[0,2] - state[0,3] * (- state[0,1] + newHoldings) - tmp,
-                 self.ttPath[int(state[0,0])+1],
+                 state[0,3]*marketTransition,
                  state[0,4]-self.dt*365
                  )
 
