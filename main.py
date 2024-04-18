@@ -15,7 +15,7 @@ def main():
     with open(os.path.join(CONFIG['saveCheckpointsFolder'], '_config.txt'), "w") as con:
         con.write(str(CONFIG))
 
-    scenario = HedgerPlan_TV(CONFIG['reservoir'])
+    scenario = HedgerPlan_TV(CONFIG)
 
     # Setup neural network
     nnet = trainerNeuralNet(scenario, CONFIG['nnArgs'])

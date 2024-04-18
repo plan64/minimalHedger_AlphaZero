@@ -86,12 +86,13 @@ class Trainer():
             for _ in tqdm(range(self.config['validationCycles']), desc="Validation...."):
                 curPlayer = 1
                 state = self.game.getInitState()
-                nmcts = MCTS(self.game, self.nnet, self.config)
-                pmcts = MCTS(self.game, self.pnet, self.config)
+                
+                newPlayer = lambda x: np.argmax(self.nnet.predict(x)[0])
+                pastPlayer = lambda x: np.argmax(self.pnet.predict(x)[0])
+
 
                 while self.game.getGameEnded(state, curPlayer) == 0:
-                    state, curPlayer = self.game.getNextState(state, curPlayer, np.argmax(
-                        pmcts.getActionProb(state, temp=0)))
+                    state, curPlayer = self.game.getNextState(state, curPlayer, pastPlayer(state))
                 #h_l2_distance_oldModel+= (self.game.stateValue(state)-self.game.)**2
 
                 result1 = self.game.getGameEnded(state, curPlayer)
@@ -101,8 +102,7 @@ class Trainer():
                 state = self.game.getInitState()
 
                 while self.game.getGameEnded(state, curPlayer) == 0:
-                    state, curPlayer = self.game.getNextState(state, curPlayer, np.argmax(
-                        nmcts.getActionProb(state, temp=0)))
+                    state, curPlayer = self.game.getNextState(state, curPlayer, newPlayer(state))
 
                 result2 = self.game.getGameEnded(state, curPlayer)
                 # print('\n New result ' +str(result2))

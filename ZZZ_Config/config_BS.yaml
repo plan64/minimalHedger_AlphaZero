@@ -5,10 +5,12 @@ temp: 100
 nnUpdateThreshold: 1.0
 exmpThreshold: 100000
 numMCTSSims: 25
-validationCycles: 100
+validationCycles: 500
 nnWeight: 1.0
 shortenHistoryAfterIter: 5
 numberWorkers: 4
+measureSampleEfficiency: 1 #binary flag. if true model is trained on pre-defined paths to measure number of needed samples
+reservoir: 50000
 saveCheckpointsFolder: './ZZZ_Runs/Run_1_BS/'
 loadModelFile: null
 loadCheckpointFile: null

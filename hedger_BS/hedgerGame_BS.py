@@ -6,11 +6,13 @@ from random import randrange
 from scipy.stats import norm
 
 class HedgerPlan_BS():
-    def __init__(self, n_episodes):
+    def __init__(self, config):
         self.episode_step = 0
+        self.config = config
         self.n_actions = 21
         self.n_samples=60 #number of individual actions per episode
-        self.n_episodes = 10000 #this is used a repository of possible paths
+        self.n_episodes = config['reservoir'] #this is used a repository of possible paths
+        self.measureSampleEfficiency = config['measureSampleEfficiency']
 
         self.T = self.n_samples/365
         self.dt = self.T*1/self.n_samples
@@ -109,10 +111,15 @@ class HedgerPlan_BS():
         #state 2: riskfree account Balance
         #state 3: new stockPrice
         #state 4: time to maturity
+        if self.measureSampleEfficiency:
+            marketTransition = self.ttPath[int(state[0,0])+1]
+        else:
+            marketTransition = state[0,3]*self.upFactor**np.random.choice([1,0,-1], 1, p=[self.probUp,self.probMid,self.probDown])[0]
+       
         stateNew = (state[0,0]+1,
                  newHoldings,
                  state[0,2] - state[0,3] * (- state[0,1] + newHoldings),
-                 self.ttPath[int(state[0,0])+1],
+                 marketTransition,
                  state[0,4]-self.dt*365
                  )
         tmp = abs(self.stateValue(state)-self.conditionalPricePath[int(state[0,0])])

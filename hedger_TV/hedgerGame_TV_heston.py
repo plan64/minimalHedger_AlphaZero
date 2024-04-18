@@ -6,12 +6,14 @@ from random import randrange
 from scipy.stats import norm
 
 class HedgerPlan_TV_heston():
-    def __init__(self, n_episodes):
+    def __init__(self, config):
         self.episode_step = 0
+        self.config = config
         #GBM Parameters
         self.n_actions = 21
         self.n_samples=60 #number of individual actions per episode
-        self.n_episodes = n_episodes #this is used a repository of possible paths
+        self.n_episodes = config['reservoir'] #this is used a repository of possible paths
+        self.measureSampleEfficiency = config['measureSampleEfficiency']
         
         #some params of the heston model
         self.T = self.n_samples/365
@@ -145,7 +147,7 @@ class HedgerPlan_TV_heston():
         if(state[0,4]>0):
             return 0
         else:
-            tmp = 100/self.s0**2*((self.stateValue(state)-max(0.0,state[0,:][3]-self.strike))**2+2/self.lambd*state[2,2])
+            tmp = 100*100/self.s0**2*((self.stateValue(state)-max(0.0,state[0,:][3]-self.strike))**2+2/self.lambd*state[2,2])
             if tmp > 10:
                 tmp = 10
             return -tmp/5+1

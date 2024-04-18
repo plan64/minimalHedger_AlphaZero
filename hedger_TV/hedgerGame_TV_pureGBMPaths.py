@@ -6,12 +6,14 @@ from random import randrange
 from scipy.stats import norm
 
 class HedgerPlan_TV_gbm():
-    def __init__(self, n_episodes):
+    def __init__(self, config):
         self.episode_step = 0
+        self.config = config
         #GBM Parameters
         self.n_actions = 21
         self.n_samples=30 #number of individual actions per episode
-        self.n_episodes = n_episodes #this is used a repository of possible paths
+        self.n_episodes = config['reservoir'] #this is used a repository of possible paths
+        self.measureSampleEfficiency = config['measureSampleEfficiency']
         
         self.T = self.n_samples/365
         self.dt = self.T*1/self.n_samples#the convention used throughout is that we must devide through 365 to get annualized results
@@ -102,10 +104,16 @@ class HedgerPlan_TV_gbm():
         #state 2: riskfree account Balance
         #state 3: new stockPrice
         #state 4: time to maturity
+        
+        if self.measureSampleEfficiency:
+            marketTransition = self.ttPath[int(state[0,0])+1]
+        else:
+            marketTransition = state[0,3]*self.upFactor**np.random.choice([1,0,-1], 1, p=[self.probUp,self.probMid,self.probDown])[0]
+
         stateNew = (state[0,0]+1,
                  newHoldings,
                  state[0,2] - state[0,3] * (- state[0,1] + newHoldings) - tmp,
-                 self.ttPath[int(state[0,0])+1],
+                 marketTransition,
                  state[0,4]-self.dt*365
                  )
 
@@ -127,7 +135,7 @@ class HedgerPlan_TV_gbm():
         if(ts[0]<self.n_samples):
             return 0
         else:
-            tmp = 100/self.s0**2*((self.stateValue(state)-max(0.0,state[0,:][3]-self.strike))**2+2/self.lambd*state[2,2])
+            tmp = 100*100/self.s0**2*((self.stateValue(state)-max(0.0,state[0,:][3]-self.strike))**2+2/self.lambd*state[2,2])
             if tmp > 10:
                 tmp = 10
             return -tmp/5+1
